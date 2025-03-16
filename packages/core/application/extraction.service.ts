@@ -4,7 +4,7 @@ import {
   createExtraction,
   type Extraction,
 } from "../domain/entities/extraction.entity.ts";
-import type { Llm, Message } from "./ports/llm.service.ts";
+import type { Llm, Message } from "./ports/llm.ts";
 import type { Loader } from "./ports/loader.ts";
 
 export type ExtractionServiceDependencies<L extends Llm> = {

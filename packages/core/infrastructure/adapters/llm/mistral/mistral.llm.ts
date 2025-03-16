@@ -5,7 +5,7 @@ import {
   type Llm,
   type Message,
   type VisionContent,
-} from "../../../../application/ports/llm.service.ts";
+} from "../../../../application/ports/llm.ts";
 
 const safeJsonParse = (data: string) => {
   try {

@@ -1,5 +1,5 @@
 import { extractionServiceFactory } from "./application/extraction.service.ts";
-import type { Llm } from "./application/ports/llm.service.ts";
+import type { Llm } from "./application/ports/llm.ts";
 import { mistral, openai } from "./infrastructure/adapters/llm/index.ts";
 
 type LlmFactory = (args: { apiKey: string }) => Llm;
