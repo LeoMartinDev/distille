@@ -22,7 +22,7 @@ export const extractionServiceFactory = <L extends Llm>({
         messages?: Message<L["features"]>[];
         model: L["model"];
       },
-    ): Promise<Extraction<Schema>> => {
+    ): Promise<Extraction> => {
       if (!llms.some((llm) => llm.model === args.model)) {
         throw new Error(`Model ${args.model} is not supported`);
       }

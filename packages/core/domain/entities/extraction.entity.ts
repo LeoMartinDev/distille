@@ -1,29 +1,7 @@
-import { randomUUID } from "node:crypto";
 import type { JSONSchema } from "json-schema-to-ts";
+import { randomUUID } from "node:crypto";
+import type { SerializableJSON } from "../utils/types.ts";
 import { validateJsonSchema } from "../utils/validate-json-schema.ts";
-
-export type JSONValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JSONValue[]
-  | { [key: string]: JSONValue };
-
-/**
- * Represents a JSON object with string keys and JSON values
- */
-export type JSONObject = { [key: string]: JSONValue };
-
-/**
- * Represents a JSON array of JSON values
- */
-export type JSONArray = JSONValue[];
-
-/**
- * Represents all serializable JSON data
- */
-export type SerializableJSON = JSONValue;
 
 export type Extraction = {
   id: string;
