@@ -1,0 +1,7 @@
+{
+  "deno.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "vue.codeActions.enabled": false,
+  "vue.codeLens.enabled": false
+}
