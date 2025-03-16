@@ -64,6 +64,7 @@ export const extractionServiceFactory = <L extends Llm>({
         model: args.model,
         data: llmResult.data,
         createdAt: Temporal.Now.instant(),
+        usage: llmResult.usage,
       });
     },
     get availableModels(): string[] {

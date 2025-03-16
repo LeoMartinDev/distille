@@ -53,6 +53,11 @@ export type Llm = {
     messages: Message[];
   }): Promise<{
     data: SerializableJSON | null;
+    usage: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
   }>;
   readonly model: string;
   readonly features: Features;

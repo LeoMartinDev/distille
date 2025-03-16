@@ -80,12 +80,15 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
           },
         });
 
-        console.log("response", response.choices?.[0]?.message);
-
         const data = response.choices?.[0]?.message?.parsed ?? null;
 
         return {
           data,
+          usage: {
+            promptTokens: response.usage?.prompt_tokens ?? -1,
+            completionTokens: response.usage?.completion_tokens ?? -1,
+            totalTokens: response.usage?.total_tokens ?? -1,
+          },
         };
       },
       model: args.model,

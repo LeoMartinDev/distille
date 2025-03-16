@@ -1,4 +1,5 @@
 import { Mistral } from "@mistralai/mistralai";
+import type { JSONSchema } from "json-schema-to-ts";
 import {
   type Features,
   isVisionContent,
@@ -6,6 +7,7 @@ import {
   type Message,
   type VisionContent,
 } from "../../../../application/ports/llm.ts";
+import { validateJsonSchema } from "../../../../domain/utils/validate-json-schema.ts";
 
 const safeJsonParse = (data: string) => {
   try {
@@ -15,7 +17,8 @@ const safeJsonParse = (data: string) => {
   }
 };
 
-const parseResponse = (
+const getData = (
+  schema: JSONSchema,
   data: Awaited<ReturnType<Mistral["chat"]["complete"]>>,
 ) => {
   const content = data.choices?.[0]?.message?.content;
@@ -28,7 +31,19 @@ const parseResponse = (
     return null;
   }
 
-  return safeJsonParse(content);
+  const parsed = safeJsonParse(content);
+
+  if (!parsed) {
+    return null;
+  }
+
+  const isValid = validateJsonSchema(schema, parsed);
+
+  if (!isValid) {
+    return null;
+  }
+
+  return parsed;
 };
 
 const toMistralAiMessages = (
@@ -108,7 +123,12 @@ export const makeMistralLlmFactory = <Model extends string>(args: {
         });
 
         return {
-          data: parseResponse(response),
+          data: getData(schema, response),
+          usage: {
+            promptTokens: response.usage.promptTokens,
+            completionTokens: response.usage.completionTokens,
+            totalTokens: response.usage.totalTokens,
+          },
         };
       },
       model: args.model,

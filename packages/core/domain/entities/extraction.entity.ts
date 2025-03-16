@@ -9,6 +9,11 @@ export type Extraction = {
   model: string;
   schema: JSONSchema;
   data: SerializableJSON;
+  usage: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 };
 
 export const createExtraction = ({
@@ -17,6 +22,7 @@ export const createExtraction = ({
   model,
   schema,
   data,
+  usage,
 }: Extraction): Extraction => {
   const isDataValid = validateJsonSchema(schema, data);
 
@@ -30,5 +36,6 @@ export const createExtraction = ({
     model,
     schema,
     data,
+    usage,
   };
 };
