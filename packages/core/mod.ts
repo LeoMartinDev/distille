@@ -20,7 +20,7 @@ export { extractionServiceFactory };
 export const makeExtractionService = (args: {
   mistral?: { apiKey: string };
   openai?: { apiKey: string };
-}): ExtractionService => {
+}): ExtractionService<Llm> => {
   if (!args.mistral?.apiKey && !args.openai?.apiKey) {
     throw new Error("No API keys provided");
   }
