@@ -11,6 +11,7 @@ export const extractRouteFactory = ({
   const extractionService = makeExtractionService({
     mistral: config.providers?.mistral,
     openai: config.providers?.openai,
+    gemini: config.providers?.gemini,
   });
 
   console.info("Available llms", extractionService.availableModels);

@@ -26,14 +26,22 @@ const configSchema = {
           },
           required: ["apiKey"],
         },
+        gemini: {
+          type: "object",
+          properties: {
+            apiKey: { type: "string", minLength: 1, maxLength: 256 },
+          },
+          required: ["apiKey"],
+        },
       },
       anyOf: [
         { required: ["mistral"] },
         { required: ["openai"] },
+        { required: ["gemini"] },
       ],
     },
   },
-  required: ["providers", "token"],
+  required: ["providers"],
 } as const satisfies JSONSchema;
 
 export type Config = FromSchema<typeof configSchema>;
@@ -41,13 +49,16 @@ export type Config = FromSchema<typeof configSchema>;
 const validate = ajv.compile(configSchema);
 
 const rawConfig = {
-  token: Deno.env.has("TOKEN") ? Deno.env.get("TOKEN")! : undefined,
+  token: Deno.env.get("TOKEN"),
   providers: {
     mistral: Deno.env.has("MISTRAL_API_KEY")
       ? { apiKey: Deno.env.get("MISTRAL_API_KEY")! }
       : undefined,
     openai: Deno.env.has("OPENAI_API_KEY")
       ? { apiKey: Deno.env.get("OPENAI_API_KEY")! }
+      : undefined,
+    gemini: Deno.env.has("GEMINI_API_KEY")
+      ? { apiKey: Deno.env.get("GEMINI_API_KEY")! }
       : undefined,
   },
 };

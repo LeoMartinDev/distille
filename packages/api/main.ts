@@ -1,5 +1,3 @@
-import "@std/dotenv/load";
-
 import config from "./config.ts";
 import type { Route } from "./types.ts";
 import { extractRouteFactory } from "./routes/extract.route.ts";
@@ -34,10 +32,12 @@ export default {
     }
 
     try {
-      const token = request.headers.get("Authorization");
+      if (config.token) {
+        const token = request.headers.get("Authorization");
 
-      if (token !== config.token) {
-        return new Response("Unauthorized", { status: 401 });
+        if (token !== config.token) {
+          return new Response("Unauthorized", { status: 401 });
+        }
       }
 
       const { match, route } = matchedRoute;
