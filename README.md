@@ -146,16 +146,22 @@ Distille can be used as a library in your Deno or Node.js projects.
 
 #### Installation
 
-For Deno:
+##### Deno
 
 ```ts
-import { makeExtractionService } from "https://deno.land/x/distille/mod.ts";
+import { makeExtractionService } from "jsr:distille";
 ```
 
-For Node.js (coming soon):
+You can install it as a dependency:
 
 ```bash
-npm install distille
+deno add jsr:distille
+```
+
+##### Node.js
+
+```bash
+npx jsr add distille
 ```
 
 #### Usage Example
