@@ -8,6 +8,7 @@ const ajv = new Ajv();
 const configSchema = {
   type: "object",
   properties: {
+    token: { type: "string", minLength: 1, maxLength: 256 },
     providers: {
       type: "object",
       properties: {
@@ -32,7 +33,7 @@ const configSchema = {
       ],
     },
   },
-  required: ["providers"],
+  required: ["providers", "token"],
 } as const satisfies JSONSchema;
 
 export type Config = FromSchema<typeof configSchema>;
@@ -40,6 +41,7 @@ export type Config = FromSchema<typeof configSchema>;
 const validate = ajv.compile(configSchema);
 
 const rawConfig = {
+  token: Deno.env.has("TOKEN") ? Deno.env.get("TOKEN")! : undefined,
   providers: {
     mistral: Deno.env.has("MISTRAL_API_KEY")
       ? { apiKey: Deno.env.get("MISTRAL_API_KEY")! }
