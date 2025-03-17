@@ -23,6 +23,18 @@
 Distille is a tool for extracting structured data from unstructured text by
 leveraging the power of LLMs.
 
+Here are some examples of what you can do with Distille:
+
+- Extract information from resumes or CVs into structured JSON
+- Parse product descriptions from PDFs into database-ready records
+- Convert unstructured medical records into standardized fields
+- Extract key entities and relationships from legal documents
+- Transform meeting notes into actionable items and assignments
+- Extract pricing and feature tables from marketing materials
+
+Simply define a JSON Schema for the data you want, provide the unstructured
+content, and Distille will handle the extraction process.
+
 ## Features
 
 - Works with different LLMs providers (OpenAI, Mistral, Google Gemini)
