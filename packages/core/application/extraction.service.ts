@@ -11,14 +11,26 @@ export type ExtractionServiceDependencies<L extends Llm> = {
   llms: L[];
 };
 
+export type ExtractionService<L extends Llm> = {
+  extract: (
+    args: {
+      loader: Loader;
+      schema: JSONSchema;
+      messages?: Message<L["features"]>[];
+      model: L["model"];
+    },
+  ) => Promise<Extraction>;
+  availableModels: string[];
+};
+
 export const extractionServiceFactory = <L extends Llm>({
   llms,
-}: ExtractionServiceDependencies<L>) => {
+}: ExtractionServiceDependencies<L>): ExtractionService<L> => {
   return {
-    extract: async <Schema extends JSONSchema>(
+    extract: async (
       args: {
         loader: Loader;
-        schema: Schema;
+        schema: JSONSchema;
         messages?: Message<L["features"]>[];
         model: L["model"];
       },

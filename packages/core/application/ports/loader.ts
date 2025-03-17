@@ -1,4 +1,4 @@
-type TextLoader = {
+export type TextLoader = {
   type: "text";
   // promise or not
   load: () => Promise<string> | string;

@@ -2,6 +2,14 @@
   "deno.enable": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
+  "deno.lint": true,
+  "deno.codeLens.implementations": true,
+  "deno.codeLens.referencesAllFunctions": true,
+  "deno.codeLens.references": true,
+  "deno.codeLens.test": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.ts": "always"
+  },
   "vue.codeActions.enabled": false,
   "vue.codeLens.enabled": false
 }

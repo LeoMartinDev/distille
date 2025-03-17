@@ -95,10 +95,14 @@ const toMistralAiMessages = (
     throw new Error(`Unsupported role: ${role}`);
   });
 
+export type MistralLlmFactory = (args: {
+  apiKey: string;
+}) => Llm;
+
 export const makeMistralLlmFactory = <Model extends string>(args: {
   model: Model;
   features: Features;
-}) => {
+}): MistralLlmFactory => {
   return ({
     apiKey,
   }: {

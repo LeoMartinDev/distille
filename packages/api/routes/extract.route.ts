@@ -1,7 +1,7 @@
 import { pdf } from "../../core/infrastructure/adapters/loader/pdf.loader.ts";
 import { makeExtractionService } from "../../core/mod.ts";
 import type { Config } from "../config.ts";
-import { Route } from "../types.ts";
+import type { Route } from "../types.ts";
 
 export const extractRouteFactory = ({
   config,

@@ -1,4 +1,7 @@
-import { extractionServiceFactory } from "./application/extraction.service.ts";
+import {
+  type ExtractionService,
+  extractionServiceFactory,
+} from "./application/extraction.service.ts";
 import type { Llm } from "./application/ports/llm.ts";
 import { mistral, openai } from "./infrastructure/adapters/llm/index.ts";
 
@@ -17,7 +20,7 @@ export { extractionServiceFactory };
 export const makeExtractionService = (args: {
   mistral?: { apiKey: string };
   openai?: { apiKey: string };
-}) => {
+}): ExtractionService => {
   if (!args.mistral?.apiKey && !args.openai?.apiKey) {
     throw new Error("No API keys provided");
   }

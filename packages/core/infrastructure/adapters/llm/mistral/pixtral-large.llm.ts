@@ -1,6 +1,9 @@
-import { makeMistralLlmFactory } from "./mistral.llm.ts";
+import {
+  makeMistralLlmFactory,
+  type MistralLlmFactory,
+} from "./mistral.llm.ts";
 
-export const pixtralLargeLlmFactory = makeMistralLlmFactory({
+export const pixtralLargeLlmFactory: MistralLlmFactory = makeMistralLlmFactory({
   model: "pixtral-large",
   features: {
     vision: true,

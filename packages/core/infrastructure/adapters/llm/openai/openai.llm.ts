@@ -54,10 +54,14 @@ const toOpenAiMessages = (
     throw new Error(`Unsupported message`);
   });
 
+export type OpenaiLlmFactory = (args: {
+  apiKey: string;
+}) => Llm;
+
 export const makeOpenaiLlmFactory = <Model extends string>(args: {
   model: Model;
   features: Features;
-}) => {
+}): OpenaiLlmFactory => {
   return ({
     apiKey,
   }: {
