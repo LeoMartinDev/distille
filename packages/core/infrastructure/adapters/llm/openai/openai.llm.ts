@@ -7,6 +7,7 @@ import {
   type VisionContent,
 } from "../../../../application/ports/llm.ts";
 
+// https://platform.openai.com/docs/guides/structured-outputs?api-mode=chat#supported-schemas
 const toOpenAiMessages = (
   features: Features,
   messages: Message<typeof features>[],

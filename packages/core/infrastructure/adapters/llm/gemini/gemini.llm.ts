@@ -1,10 +1,16 @@
-import { GoogleGenerativeAI, type ResponseSchema } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  type ResponseSchema,
+  SchemaType,
+} from "@google/generative-ai";
 import type { Features, Llm } from "../../../../application/ports/llm.ts";
 import convert from "@openapi-contrib/json-schema-to-openapi-schema";
 
 export type GeminiLlmFactory = (args: {
   apiKey: string;
 }) => Llm;
+
+//https://ai.google.dev/gemini-api/docs/structured-output?hl=fr&lang=node
 
 export const makeGeminiLlmFactory = <Model extends string>(args: {
   model: Model;
@@ -35,8 +41,10 @@ export const makeGeminiLlmFactory = <Model extends string>(args: {
 
         const result = await model.generateContent({
           contents: messages.map((message) => ({
-            role: message.role,
-            parts: [message.content],
+            role: message.role === "system" ? "user" : message.role,
+            parts: [{
+              text: message.content.text,
+            }],
           })),
         });
 
