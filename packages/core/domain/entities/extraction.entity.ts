@@ -89,7 +89,10 @@ export type Extraction = {
   id: string;
   createdAt: Temporal.Instant;
   model: string;
-  schema: Schema;
+  schemas: {
+    original: Schema;
+    transformed: Schema;
+  };
   data: SerializableJSON;
   usage: {
     promptTokens: number;
@@ -102,11 +105,11 @@ export const createExtraction = ({
   id = randomUUID(),
   createdAt = Temporal.Now.instant(),
   model,
-  schema,
+  schemas,
   data,
   usage,
 }: Extraction): Extraction => {
-  const isDataValid = validateJsonSchema(schema, data);
+  const isDataValid = validateJsonSchema(schemas.original, data);
 
   if (!isDataValid) {
     throw new Error("Invalid data");
@@ -116,7 +119,7 @@ export const createExtraction = ({
     id,
     createdAt,
     model,
-    schema,
+    schemas,
     data,
     usage,
   };

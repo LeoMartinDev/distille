@@ -15,13 +15,11 @@ import type {
   StringSchema,
   UnionSchema,
 } from "../../../../domain/entities/extraction.entity.ts";
+import { safeJsonParse } from "../../utils/safe-json-parse.ts";
 
 export type GeminiLlmFactory = (args: {
   apiKey: string;
 }) => Llm;
-
-// Helper type for schemas with type arrays
-type SchemaWithTypeArray = Extract<Schema, { type: string[] }>;
 
 //https://ai.google.dev/gemini-api/docs/structured-output?hl=fr&lang=node
 
@@ -370,13 +368,7 @@ export const makeGeminiLlmFactory = <Model extends string>(args: {
 
     return {
       parse: async ({ schema, messages }) => {
-        // Convert our schema to Gemini's format
-        const responseSchema = convertToGeminiSchema(schema as Schema);
-
-        console.log(
-          "Converted schema:",
-          JSON.stringify(responseSchema, null, 2),
-        );
+        const responseSchema = convertToGeminiSchema(schema);
 
         const model = client.getGenerativeModel({
           model: args.model,
@@ -395,16 +387,15 @@ export const makeGeminiLlmFactory = <Model extends string>(args: {
           })),
         });
 
-        console.log(result.response.text());
-
         return {
-          data: result.response.text() ?? null,
+          data: safeJsonParse(result.response.text()),
           usage: {
             promptTokens: result.response.usageMetadata?.promptTokenCount ?? -1,
             completionTokens:
               result.response.usageMetadata?.candidatesTokenCount ?? -1,
             totalTokens: result.response.usageMetadata?.totalTokenCount ?? -1,
           },
+          schema: responseSchema,
         };
       },
       model: args.model,

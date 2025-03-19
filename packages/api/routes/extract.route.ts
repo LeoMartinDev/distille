@@ -71,8 +71,8 @@ export const extractRouteFactory = ({
       let jsonSchema;
       try {
         const parsedSchema = JSON.parse(rawJsonSchema);
-        if (!validateSchema(parsedSchema)) {
-          console.log(validateSchema(parsedSchema));
+        if (!validateSchema({ data: parsedSchema })) {
+          // TODO: return the errors
           return new Response("Invalid JSON Schema", { status: 400 });
         }
         jsonSchema = parsedSchema;

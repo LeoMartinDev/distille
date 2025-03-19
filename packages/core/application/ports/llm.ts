@@ -58,6 +58,7 @@ export type Llm = {
       completionTokens: number;
       totalTokens: number;
     };
+    schema: Schema;
   }>;
   readonly model: string;
   readonly features: Features;

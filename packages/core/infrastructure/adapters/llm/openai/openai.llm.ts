@@ -103,6 +103,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
 
     return {
       parse: async ({ schema, messages }) => {
+        const responseSchema = prepareSchemaForOpenAI(schema);
         const response = await client.beta.chat.completions.parse({
           model: args.model,
           messages: toOpenAiMessages(args.features, messages),
@@ -110,7 +111,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
             type: "json_schema",
             json_schema: {
               name: "response",
-              schema: prepareSchemaForOpenAI(schema),
+              schema: responseSchema,
               strict: true,
             },
           },
@@ -125,6 +126,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
             completionTokens: response.usage?.completion_tokens ?? -1,
             totalTokens: response.usage?.total_tokens ?? -1,
           },
+          schema: responseSchema,
         };
       },
       model: args.model,

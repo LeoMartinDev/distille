@@ -71,7 +71,10 @@ export const extractionServiceFactory = <L extends Llm>({
 
       return createExtraction({
         id: crypto.randomUUID(),
-        schema: args.schema,
+        schemas: {
+          original: args.schema,
+          transformed: llmResult.schema,
+        },
         model: args.model,
         data: llmResult.data,
         createdAt: Temporal.Now.instant(),
