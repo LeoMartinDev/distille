@@ -2,230 +2,231 @@ import type { JSONSchema } from "json-schema-to-ts";
 
 export const schemaJsonSchema = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Extraction Schema",
-  "description": "Schema that validates our custom Schema type",
-  "oneOf": [
-    {
+  "title": "Schema Validator",
+  "description": "JSON Schema to validate Schema objects",
+  "definitions": {
+    "BaseSchema": {
       "type": "object",
       "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "string" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "string" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
-        "description": { "type": "string" },
-        "enum": {
-          "type": "array",
-          "items": { "type": "string" },
-        },
-        "format": { "type": "string" },
-        "pattern": { "type": "string" },
-        "minLength": { "type": "integer", "minimum": 0 },
-        "maxLength": { "type": "integer", "minimum": 0 },
-      },
-      "required": ["type"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "number" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "number" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
-        "description": { "type": "string" },
-        "minimum": { "type": "number" },
-        "maximum": { "type": "number" },
-        "exclusiveMinimum": { "type": "number" },
-        "exclusiveMaximum": { "type": "number" },
-        "multipleOf": { "type": "number", "exclusiveMinimum": 0 },
-      },
-      "required": ["type"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "integer" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "integer" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
-        "description": { "type": "string" },
-        "minimum": { "type": "integer" },
-        "maximum": { "type": "integer" },
-        "exclusiveMinimum": { "type": "integer" },
-        "exclusiveMaximum": { "type": "integer" },
-        "multipleOf": { "type": "integer", "minimum": 1 },
-      },
-      "required": ["type"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "boolean" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "boolean" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
         "description": { "type": "string" },
       },
-      "required": ["type"],
-      "additionalProperties": false,
     },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "array" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "array" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
-        "description": { "type": "string" },
-        "items": { "$ref": "#" },
-        "minItems": { "type": "integer", "minimum": 0 },
-        "maxItems": { "type": "integer", "minimum": 0 },
-        "uniqueItems": { "type": "boolean" },
-      },
-      "required": ["type", "items"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "type": {
-          "oneOf": [
-            { "const": "object" },
-            {
-              "type": "array",
-              "items": [
-                { "const": "object" },
-                { "const": "null" },
-              ],
-              "additionalItems": false,
-              "minItems": 2,
-              "maxItems": 2,
-            },
-          ],
-        },
-        "description": { "type": "string" },
-        "properties": {
+    "StringSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
           "type": "object",
-          "additionalProperties": { "$ref": "#" },
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "string" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["string", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+            "enum": { "type": "array", "items": { "type": "string" } },
+            "format": { "type": "string" },
+            "pattern": { "type": "string" },
+            "minLength": { "type": "integer", "minimum": 0 },
+            "maxLength": { "type": "integer", "minimum": 0 },
+          },
+          "required": ["type"],
         },
-        "required": {
-          "type": "array",
-          "items": { "type": "string" },
+      ],
+    },
+    "NumberSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "number" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["number", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+            "minimum": { "type": "number" },
+            "maximum": { "type": "number" },
+            "exclusiveMinimum": { "type": "number" },
+            "exclusiveMaximum": { "type": "number" },
+            "multipleOf": { "type": "number", "exclusiveMinimum": 0 },
+          },
+          "required": ["type"],
         },
-        "additionalProperties": {
+      ],
+    },
+    "IntegerSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "integer" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["integer", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+            "minimum": { "type": "number" },
+            "maximum": { "type": "number" },
+            "exclusiveMinimum": { "type": "number" },
+            "exclusiveMaximum": { "type": "number" },
+            "multipleOf": { "type": "number", "exclusiveMinimum": 0 },
+          },
+          "required": ["type"],
+        },
+      ],
+    },
+    "BooleanSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "boolean" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["boolean", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+          },
+          "required": ["type"],
+        },
+      ],
+    },
+    "NullSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": { "const": "null" },
+          },
+          "required": ["type"],
+        },
+      ],
+    },
+    "ArraySchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "array" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["array", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+            "items": { "$ref": "#/definitions/Schema" },
+            "minItems": { "type": "integer", "minimum": 0 },
+            "maxItems": { "type": "integer", "minimum": 0 },
+            "uniqueItems": { "type": "boolean" },
+          },
+          "required": ["type", "items"],
+        },
+      ],
+    },
+    "ObjectSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "oneOf": [
+                { "const": "object" },
+                {
+                  "type": "array",
+                  "items": { "enum": ["object", "null"] },
+                  "minItems": 2,
+                  "maxItems": 2,
+                },
+              ],
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/definitions/Schema" },
+            },
+            "required": {
+              "type": "array",
+              "items": { "type": "string" },
+            },
+            "additionalProperties": {
+              "oneOf": [
+                { "type": "boolean" },
+                { "$ref": "#/definitions/Schema" },
+              ],
+            },
+          },
+          "required": ["type"],
+        },
+      ],
+    },
+    "UnionSchema": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseSchema" },
+        {
+          "type": "object",
+          "properties": {
+            "oneOf": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Schema" },
+            },
+            "anyOf": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Schema" },
+            },
+            "allOf": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Schema" },
+            },
+          },
           "oneOf": [
-            { "type": "boolean" },
-            { "$ref": "#" },
+            { "required": ["oneOf"] },
+            { "required": ["anyOf"] },
+            { "required": ["allOf"] },
           ],
         },
-      },
-      "required": ["type"],
-      "additionalProperties": false,
+      ],
     },
-    {
-      "type": "object",
-      "properties": {
-        "type": { "const": "null" },
-        "description": { "type": "string" },
-      },
-      "required": ["type"],
-      "additionalProperties": false,
+    "Schema": {
+      "oneOf": [
+        { "$ref": "#/definitions/StringSchema" },
+        { "$ref": "#/definitions/NumberSchema" },
+        { "$ref": "#/definitions/IntegerSchema" },
+        { "$ref": "#/definitions/BooleanSchema" },
+        { "$ref": "#/definitions/ArraySchema" },
+        { "$ref": "#/definitions/ObjectSchema" },
+        { "$ref": "#/definitions/NullSchema" },
+        { "$ref": "#/definitions/UnionSchema" },
+      ],
     },
-    {
-      "type": "object",
-      "properties": {
-        "description": { "type": "string" },
-        "oneOf": {
-          "type": "array",
-          "items": { "$ref": "#" },
-          "minItems": 1,
-        },
-      },
-      "required": ["oneOf"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "description": { "type": "string" },
-        "anyOf": {
-          "type": "array",
-          "items": { "$ref": "#" },
-          "minItems": 1,
-        },
-      },
-      "required": ["anyOf"],
-      "additionalProperties": false,
-    },
-    {
-      "type": "object",
-      "properties": {
-        "description": { "type": "string" },
-        "allOf": {
-          "type": "array",
-          "items": { "$ref": "#" },
-          "minItems": 1,
-        },
-      },
-      "required": ["allOf"],
-      "additionalProperties": false,
-    },
-  ],
+  },
+  "$ref": "#/definitions/Schema",
 } as const satisfies JSONSchema;

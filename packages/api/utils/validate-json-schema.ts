@@ -1,14 +1,23 @@
-import type { Schema } from "../../core/domain/entities/extraction.entity.ts";
+import type { JSONSchema } from "json-schema-to-ts";
 import { Ajv } from "ajv";
 
-const ajv = new Ajv();
+const ajv = new Ajv({
+  strict: false,
+  strictSchema: false,
+  strictTypes: false,
+  allowUnionTypes: true,
+});
 
 export const makeValidateJsonSchema = ({
   schema,
 }: {
-  schema: Schema;
+  schema: JSONSchema;
 }) => {
   const validate = ajv.compile(schema);
 
-  return ({ data }: { data: unknown }) => validate(data);
+  return ({ data }: { data: unknown }) => {
+    const isValid = validate(data);
+    console.log(validate.errors);
+    return isValid;
+  };
 };
