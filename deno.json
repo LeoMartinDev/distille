@@ -2,5 +2,8 @@
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "workspace": ["packages/core", "packages/api"],
   "nodeModulesDir": "auto",
-  "unstable": ["temporal"]
+  "unstable": ["temporal"],
+  "imports": {
+    "@std/testing": "jsr:@std/testing@^1.0.9"
+  }
 }
