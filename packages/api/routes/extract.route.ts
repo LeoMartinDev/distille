@@ -1,7 +1,9 @@
 import { pdf } from "../../core/infrastructure/adapters/loader/pdf.loader.ts";
 import { makeExtractionService } from "../../core/mod.ts";
 import type { Config } from "../config.ts";
+import { schemaJsonSchema } from "../schemas/schema.json-schema.ts";
 import type { Route } from "../types.ts";
+import { makeValidateJsonSchema } from "../utils/validate-json-schema.ts";
 
 export const extractRouteFactory = ({
   config,
@@ -13,6 +15,8 @@ export const extractRouteFactory = ({
     openai: config.providers?.openai,
     gemini: config.providers?.gemini,
   });
+
+  const validateSchema = makeValidateJsonSchema({ schema: schemaJsonSchema });
 
   console.info("Available llms", extractionService.availableModels);
 
@@ -67,6 +71,9 @@ export const extractRouteFactory = ({
       let jsonSchema;
       try {
         const parsedSchema = JSON.parse(rawJsonSchema);
+        if (!validateSchema(parsedSchema)) {
+          return new Response("Invalid JSON Schema", { status: 400 });
+        }
         jsonSchema = parsedSchema;
       } catch (error) {
         console.error(error);

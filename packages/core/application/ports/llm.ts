@@ -1,5 +1,5 @@
-import type { JSONSchema } from "json-schema-to-ts";
 import type { SerializableJSON } from "../../domain/utils/types.ts";
+import type { Schema } from "../../domain/entities/extraction.entity.ts";
 
 export type Features = {
   vision: boolean;
@@ -49,7 +49,7 @@ export type Llm = {
     schema,
     messages,
   }: {
-    schema: JSONSchema;
+    schema: Schema;
     messages: Message[];
   }): Promise<{
     data: SerializableJSON | null;
