@@ -98,7 +98,7 @@ function convertToGeminiSchema(schema: Schema): ResponseSchema {
     throw new Error("Schema is required");
   }
 
-  function convertSchema(schema: Schema): any {
+  function convertSchema(schema: Schema): ResponseSchema {
     // Handle union schema (oneOf, anyOf, allOf)
     if (isUnionSchema(schema)) {
       const unionType = "oneOf" in schema
@@ -127,7 +127,7 @@ function convertToGeminiSchema(schema: Schema): ResponseSchema {
         // For simplicity, we'll merge properties from all schemas
         const mergedSchema = {
           type: SchemaType.OBJECT,
-          properties: {} as Record<string, any>,
+          properties: {} as Record<string, ResponseSchema>,
           required: [] as string[],
           description: schema.description,
         };
@@ -216,7 +216,10 @@ function convertToGeminiSchema(schema: Schema): ResponseSchema {
 
       // For other type arrays, use the first type and note others in description
       const primaryType = schema.type[0];
-      const otherTypes = schema.type.slice(1).join(", ");
+      // Since we're in hasTypeArray(schema) condition, we know type is an array
+      // But TypeScript needs explicit casting to recognize this
+      const schemaTypeArray = schema.type as string[];
+      const otherTypes = schemaTypeArray.slice(1).join(", ");
 
       // Create a new schema with single type
       let updatedSchema: Schema;
@@ -312,7 +315,7 @@ function convertToGeminiSchema(schema: Schema): ResponseSchema {
     }
 
     if (isObjectSchema(schema)) {
-      const properties: Record<string, any> = {};
+      const properties: Record<string, ResponseSchema> = {};
 
       if (schema.properties) {
         for (const [key, value] of Object.entries(schema.properties)) {
@@ -338,15 +341,24 @@ function convertToGeminiSchema(schema: Schema): ResponseSchema {
 
     // Fix the properties check around line 340
     if (
-      "properties" in schema && typeof schema === "object" && schema.properties
+      typeof schema === "object" &&
+      schema !== null &&
+      "properties" in schema
     ) {
-      // Cast to ObjectSchema to handle the case
-      const objectSchema: ObjectSchema = {
-        ...schema as object, // Cast to object to fix spread error
-        type: "object",
-      } as ObjectSchema;
+      // Use a type assertion to tell TypeScript this has properties
+      const schemaWithProperties = schema as {
+        properties: Record<string, ResponseSchema>;
+      };
 
-      return convertSchema(objectSchema);
+      if (schemaWithProperties.properties) {
+        // Cast to ObjectSchema to handle the case
+        const objectSchema: ObjectSchema = {
+          ...schema as object, // Cast to object to fix spread error
+          type: "object",
+        } as ObjectSchema;
+
+        return convertSchema(objectSchema);
+      }
     }
 
     throw new Error(`Cannot determine schema type: ${JSON.stringify(schema)}`);

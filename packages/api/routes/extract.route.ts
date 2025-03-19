@@ -76,8 +76,7 @@ export const extractRouteFactory = ({
           return new Response("Invalid JSON Schema", { status: 400 });
         }
         jsonSchema = parsedSchema;
-      } catch (error) {
-        console.error(error);
+      } catch (_err) {
         return new Response("Invalid JSON Schema", { status: 400 });
       }
 

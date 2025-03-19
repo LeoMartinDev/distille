@@ -17,7 +17,6 @@ export const makeValidateJsonSchema = ({
 
   return ({ data }: { data: unknown }) => {
     const isValid = validate(data);
-    console.log(validate.errors);
     return isValid;
   };
 };
