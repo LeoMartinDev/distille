@@ -42,22 +42,35 @@ API. The main functionality involves:
 
 ### Limitations
 
-Gemini's models structured output schemas have some limitations. Google did not choose to support a subset of JSON Schemas but opted for a select subset of the OpenAPI 3.0 Schema object.
+Gemini's models structured output schemas have some limitations. Google did not
+choose to support a subset of JSON Schemas but opted for a select subset of the
+OpenAPI 3.0 Schema object.
 
-The `schema-converter.ts` module handles the translation between our schema format and Gemini's required format, with support for:
+The `schema-converter.ts` module handles the translation between our schema
+format and Gemini's required format, with support for:
 
-- **Basic types**: Converts primitive types (string, number, boolean, integer) to Gemini's SchemaType equivalents
-- **Object schemas**: Transforms object properties and required fields while preserving structure
-- **Array schemas**: Preserves array constraints (minItems, maxItems) and converts item schemas
+- **Basic types**: Converts primitive types (string, number, boolean, integer)
+  to Gemini's SchemaType equivalents
+- **Object schemas**: Transforms object properties and required fields while
+  preserving structure
+- **Array schemas**: Preserves array constraints (minItems, maxItems) and
+  converts item schemas
 - **Union types**:
-  - For `oneOf`/`anyOf` with exactly two schemas where one is null: Converts to the non-null type with `nullable: true`
-  - For `oneOf`/`anyOf` with exactly two non-null schemas: Converts to string type with `nullable: false`
+  - For `oneOf`/`anyOf` with exactly two schemas where one is null: Converts to
+    the non-null type with `nullable: true`
+  - For `oneOf`/`anyOf` with exactly two non-null schemas: Converts to string
+    type with `nullable: false`
   - For other union cases: Converts to string type
   - For `allOf`: Merges properties from all object schemas
 - **Nullable handling**:
-  - Type arrays with "null" (e.g., `["string", "null"]`): Converts to the primary type with `nullable: true`
-  - Union schemas with null option: Converts to the non-null type with `nullable: true`
-- **Format preservation**: Maintains format specifications where applicable (e.g., "double" for numbers, "int32" for integers)
+  - Type arrays with "null" (e.g., `["string", "null"]`): Converts to the
+    primary type with `nullable: true`
+  - Union schemas with null option: Converts to the non-null type with
+    `nullable: true`
+- **Format preservation**: Maintains format specifications where applicable
+  (e.g., "double" for numbers, "int32" for integers)
 - **Enum support**: Preserves enum values for string schemas
 
-This conversion is necessary because Gemini's structured output uses a different schema format than our internal representation, see [Gemini API documentation on structured output](https://ai.google.dev/gemini-api/docs/structured-output?lang=node#json-schemas).
+This conversion is necessary because Gemini's structured output uses a different
+schema format than our internal representation, see
+[Gemini API documentation on structured output](https://ai.google.dev/gemini-api/docs/structured-output?lang=node#json-schemas).

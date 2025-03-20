@@ -50,7 +50,9 @@ content, and Distille will handle the extraction process.
 
 - OpenAI
 - Mistral
-- [Google Gemini](./packages/core/infrastructure/adapters/llm/gemini/README.md) **has limitations, see [README](./packages/core/infrastructure/adapters/llm/gemini/README.md#Limitations)**
+- [Google Gemini](./packages/core/infrastructure/adapters/llm/gemini/README.md)
+  **has limitations, see
+  [README](./packages/core/infrastructure/adapters/llm/gemini/README.md#Limitations)**
 
 ## Configuration
 
