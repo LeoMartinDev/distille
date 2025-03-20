@@ -42,6 +42,15 @@ content, and Distille will handle the extraction process.
 - Can be used as a library, a CLI or an API
 - Schema-driven extraction with JSON Schema
 - Type-safe results
+- Keeps track of the schema used for extraction
+- Guarantees data matches the schema
+- Keeps track of the token usage
+
+## Supported LLMs providers
+
+- OpenAI
+- Mistral
+- [Google Gemini](./packages/core/infrastructure/adapters/llm/gemini/README.md) **has limitations, see [README](./packages/core/infrastructure/adapters/llm/gemini/README.md#Limitations)**
 
 ## Configuration
 

@@ -6,6 +6,7 @@
     "jsr:@std/assert@^1.0.11": "1.0.11",
     "jsr:@std/data-structures@^1.0.6": "1.0.6",
     "jsr:@std/dotenv@~0.225.3": "0.225.3",
+    "jsr:@std/expect@^1.0.13": "1.0.13",
     "jsr:@std/fmt@^1.0.5": "1.0.5",
     "jsr:@std/fs@^1.0.11": "1.0.14",
     "jsr:@std/fs@^1.0.9": "1.0.14",
@@ -42,6 +43,13 @@
     },
     "@std/dotenv@0.225.3": {
       "integrity": "a95e5b812c27b0854c52acbae215856d9cce9d4bbf774d938c51d212711e8d4a"
+    },
+    "@std/expect@1.0.13": {
+      "integrity": "d8e236c7089cd9fcf5e6032f27dadc3db6349d0aee48c15bc71d717bca5baa42",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.11",
+        "jsr:@std/internal"
+      ]
     },
     "@std/fmt@1.0.5": {
       "integrity": "0cfab43364bc36650d83c425cd6d99910fc20c4576631149f0f987eddede1a4d"
@@ -515,6 +523,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/expect@^1.0.13",
       "jsr:@std/testing@^1.0.9"
     ],
     "members": {

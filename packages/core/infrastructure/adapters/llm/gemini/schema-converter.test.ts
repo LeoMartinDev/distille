@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "@std/assert";
+import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
 import { SchemaType } from "@google/generative-ai";
 import {
@@ -17,6 +17,8 @@ import {
 import type {
   ArraySchema,
   BooleanSchema,
+  IntegerSchema,
+  NullSchema,
   NumberSchema,
   ObjectSchema,
   Schema,
@@ -31,9 +33,65 @@ describe("Schema Type Guards", () => {
       const nullableStringSchema: StringSchema = { type: ["string", "null"] };
       const numberSchema: NumberSchema = { type: "number" };
 
-      assertEquals(isStringSchema(stringSchema), true);
-      assertEquals(isStringSchema(nullableStringSchema), true);
-      assertEquals(isStringSchema(numberSchema), false);
+      expect(isStringSchema(stringSchema)).toBe(true);
+      expect(isStringSchema(nullableStringSchema)).toBe(true);
+      expect(isStringSchema(numberSchema)).toBe(false);
+    });
+  });
+
+  describe("isArraySchema", () => {
+    it("identifies array schemas correctly", () => {
+      const arraySchema: ArraySchema = {
+        type: "array",
+        items: { type: "string" },
+      };
+      const nullableArraySchema: ArraySchema = {
+        type: ["array", "null"],
+        items: { type: "string" },
+      };
+      const stringSchema: StringSchema = { type: "string" };
+
+      expect(isArraySchema(arraySchema)).toBe(true);
+      expect(isArraySchema(nullableArraySchema)).toBe(true);
+      expect(isArraySchema(stringSchema)).toBe(false);
+    });
+  });
+
+  describe("isBooleanSchema", () => {
+    it("identifies boolean schemas correctly", () => {
+      const booleanSchema: BooleanSchema = { type: "boolean" };
+      const nullableBooleanSchema: BooleanSchema = {
+        type: ["boolean", "null"],
+      };
+      const numberSchema: NumberSchema = { type: "number" };
+
+      expect(isBooleanSchema(booleanSchema)).toBe(true);
+      expect(isBooleanSchema(nullableBooleanSchema)).toBe(true);
+      expect(isBooleanSchema(numberSchema)).toBe(false);
+    });
+  });
+
+  describe("isIntegerSchema", () => {
+    it("identifies integer schemas correctly", () => {
+      const integerSchema: IntegerSchema = { type: "integer" };
+      const nullableIntegerSchema: IntegerSchema = {
+        type: ["integer", "null"],
+      };
+      const numberSchema: NumberSchema = { type: "number" };
+
+      expect(isIntegerSchema(integerSchema)).toBe(true);
+      expect(isIntegerSchema(nullableIntegerSchema)).toBe(true);
+      expect(isIntegerSchema(numberSchema)).toBe(false);
+    });
+  });
+
+  describe("isNullSchema", () => {
+    it("identifies null schemas correctly", () => {
+      const nullSchema: NullSchema = { type: "null" };
+      const numberSchema: NumberSchema = { type: "number" };
+
+      expect(isNullSchema(nullSchema)).toBe(true);
+      expect(isNullSchema(numberSchema)).toBe(false);
     });
   });
 
@@ -43,9 +101,37 @@ describe("Schema Type Guards", () => {
       const nullableNumberSchema: NumberSchema = { type: ["number", "null"] };
       const stringSchema: StringSchema = { type: "string" };
 
-      assertEquals(isNumberSchema(numberSchema), true);
-      assertEquals(isNumberSchema(nullableNumberSchema), true);
-      assertEquals(isNumberSchema(stringSchema), false);
+      expect(isNumberSchema(numberSchema)).toBe(true);
+      expect(isNumberSchema(nullableNumberSchema)).toBe(true);
+      expect(isNumberSchema(stringSchema)).toBe(false);
+    });
+  });
+
+  describe("isObjectSchema", () => {
+    it("identifies object schemas correctly", () => {
+      const objectSchema: ObjectSchema = { type: "object" };
+      const nullableObjectSchema: ObjectSchema = { type: ["object", "null"] };
+      const numberSchema: NumberSchema = { type: "number" };
+
+      expect(isObjectSchema(objectSchema)).toBe(true);
+      expect(isObjectSchema(nullableObjectSchema)).toBe(true);
+      expect(isObjectSchema(numberSchema)).toBe(false);
+    });
+  });
+
+  describe("isUnionSchema", () => {
+    it("identifies union schemas correctly", () => {
+      const unionSchema: UnionSchema = {
+        oneOf: [{ type: "string" }, { type: "number" }],
+      };
+      const nullableUnionSchema: UnionSchema = {
+        oneOf: [{ type: "string" }, { type: "number" }, { type: "null" }],
+      };
+      const objectSchema: ObjectSchema = { type: "object" };
+
+      expect(isUnionSchema(unionSchema)).toBe(true);
+      expect(isUnionSchema(nullableUnionSchema)).toBe(true);
+      expect(isUnionSchema(objectSchema)).toBe(false);
     });
   });
 
@@ -54,8 +140,8 @@ describe("Schema Type Guards", () => {
       const simpleSchema: StringSchema = { type: "string" };
       const arrayTypeSchema: Schema = { type: ["string", "null"] };
 
-      assertEquals(hasTypeArray(simpleSchema), false);
-      assertEquals(hasTypeArray(arrayTypeSchema), true);
+      expect(hasTypeArray(simpleSchema)).toBe(false);
+      expect(hasTypeArray(arrayTypeSchema)).toBe(true);
     });
   });
 
@@ -64,8 +150,8 @@ describe("Schema Type Guards", () => {
       const stringSchema: StringSchema = { type: "string" };
       const nullableNumberSchema: NumberSchema = { type: ["number", "null"] };
 
-      assertEquals(getSchemaType(stringSchema), "string");
-      assertEquals(getSchemaType(nullableNumberSchema), "number");
+      expect(getSchemaType(stringSchema)).toBe("string");
+      expect(getSchemaType(nullableNumberSchema)).toBe("number");
     });
   });
 });
@@ -80,8 +166,8 @@ describe("Schema Conversion", () => {
 
       const result = convertToGeminiSchema(stringSchema);
 
-      assertEquals(result.type, SchemaType.STRING);
-      assertEquals(result.description, "A test string");
+      expect(result.type).toBe(SchemaType.STRING);
+      expect(result.description).toBe("A test string");
     });
 
     it("converts number schema correctly", () => {
@@ -98,9 +184,9 @@ describe("Schema Conversion", () => {
         format: string;
         description?: string;
       };
-      assertEquals(typedResult.type, SchemaType.NUMBER);
-      assertEquals(typedResult.format, "double");
-      assertEquals(typedResult.description, "A test number");
+      expect(typedResult.type).toBe(SchemaType.NUMBER);
+      expect(typedResult.format).toBe("double");
+      expect(typedResult.description).toBe("A test number");
     });
 
     it("converts boolean schema correctly", () => {
@@ -111,8 +197,8 @@ describe("Schema Conversion", () => {
 
       const result = convertToGeminiSchema(boolSchema);
 
-      assertEquals(result.type, SchemaType.BOOLEAN);
-      assertEquals(result.description, "A test boolean");
+      expect(result.type).toBe(SchemaType.BOOLEAN);
+      expect(result.description).toBe("A test boolean");
     });
 
     it("converts array schema correctly", () => {
@@ -135,11 +221,11 @@ describe("Schema Conversion", () => {
         items?: any;
       };
 
-      assertEquals(typedResult.type, SchemaType.ARRAY);
-      assertEquals(typedResult.description, "A test array");
-      assertEquals(typedResult.minItems, 1);
-      assertEquals(typedResult.maxItems, 10);
-      assertEquals(typedResult.items?.type, SchemaType.STRING);
+      expect(typedResult.type).toBe(SchemaType.ARRAY);
+      expect(typedResult.description).toBe("A test array");
+      expect(typedResult.minItems).toBe(1);
+      expect(typedResult.maxItems).toBe(10);
+      expect(typedResult.items?.type).toBe(SchemaType.STRING);
     });
 
     it("converts object schema correctly", () => {
@@ -163,11 +249,11 @@ describe("Schema Conversion", () => {
         properties?: Record<string, any>;
       };
 
-      assertEquals(typedResult.type, SchemaType.OBJECT);
-      assertEquals(typedResult.description, "A test object");
-      assertEquals(typedResult.required, ["name"]);
-      assertEquals(typedResult.properties?.name.type, SchemaType.STRING);
-      assertEquals(typedResult.properties?.age.type, SchemaType.INTEGER);
+      expect(typedResult.type).toBe(SchemaType.OBJECT);
+      expect(typedResult.description).toBe("A test object");
+      expect(typedResult.required).toEqual(["name"]);
+      expect(typedResult.properties?.name.type).toBe(SchemaType.STRING);
+      expect(typedResult.properties?.age.type).toBe(SchemaType.INTEGER);
     });
 
     it("handles nullable types", () => {
@@ -178,11 +264,12 @@ describe("Schema Conversion", () => {
 
       const result = convertToGeminiSchema(nullableSchema);
 
-      assertEquals(result.type, SchemaType.STRING);
-      assertEquals(result.description?.includes("Could also be: null"), true);
+      expect(result.type).toBe(SchemaType.STRING);
+      expect(result.description).toBe("A nullable string");
+      expect(result.nullable).toBe(true);
     });
 
-    it("handles oneOf with null pattern", () => {
+    it("type is converted as is when union schema has two types including a null type", () => {
       const unionSchema: UnionSchema = {
         oneOf: [
           { type: "string" },
@@ -199,14 +286,35 @@ describe("Schema Conversion", () => {
         nullable?: boolean;
       };
 
-      assertEquals(typedResult.type, SchemaType.STRING);
-      assertEquals(typedResult.nullable, true);
+      expect(typedResult.type).toBe(SchemaType.STRING);
+      expect(typedResult.nullable).toBe(true);
     });
 
-    it("handles complex oneOf patterns", () => {
+    it("type is converted as string when union schema has two types and no null type", () => {
       const unionSchema: UnionSchema = {
         oneOf: [
           { type: "string" },
+          { type: "number" },
+        ],
+        description: "A string or number",
+      };
+
+      const result = convertToGeminiSchema(unionSchema);
+
+      // Type assertion for nullable property
+      const typedResult = result as {
+        type: string;
+        nullable?: boolean;
+      };
+
+      expect(typedResult.type).toBe(SchemaType.STRING);
+      expect(typedResult.nullable).toBe(false);
+    });
+
+    it("type is always string when union schema has more than one type", () => {
+      const unionSchema: UnionSchema = {
+        oneOf: [
+          { type: "array", items: { type: "string" } },
           { type: "number" },
           { type: "boolean" },
         ],
@@ -215,11 +323,7 @@ describe("Schema Conversion", () => {
 
       const result = convertToGeminiSchema(unionSchema);
 
-      assertEquals(result.type, SchemaType.STRING);
-      assertEquals(
-        result.description?.includes("Alternative types: number, boolean"),
-        true,
-      );
+      expect(result.type).toBe(SchemaType.STRING);
     });
 
     it("throws for array schema without items", () => {
@@ -228,9 +332,7 @@ describe("Schema Conversion", () => {
         description: "Bad array without items",
       } as ArraySchema;
 
-      assertThrows(
-        () => convertToGeminiSchema(badArraySchema),
-        Error,
+      expect(() => convertToGeminiSchema(badArraySchema)).toThrow(
         "Array schema must have items property",
       );
     });
