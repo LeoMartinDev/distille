@@ -3,7 +3,6 @@ import {
   type Features,
   isVisionContent,
   type Message,
-  type VisionContent,
 } from "../../../../application/ports/llm.ts";
 import type { Schema } from "../../../../domain/entities/extraction.entity.ts";
 import { safeJsonParse } from "../../utils/safe-json-parse.ts";
@@ -48,15 +47,17 @@ export const toMistralAiMessages = (
         return {
           role: "user" as const,
           content: [
-            {
-              type: "text" as const,
-              text: (content as VisionContent).text,
-            },
+            ...(content.text
+              ? [{
+                type: "text" as const,
+                text: content.text,
+              }]
+              : []),
             {
               type: "image_url" as const,
-              imageUrl: { url: (content as VisionContent).image },
+              imageUrl: { url: content.image },
             },
-          ],
+          ].filter(Boolean),
         };
       }
 

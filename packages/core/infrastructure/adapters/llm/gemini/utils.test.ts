@@ -1,6 +1,5 @@
-import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { SchemaType } from "@google/generative-ai";
+import { expect } from "@std/expect";
 import {
   convertToGeminiSchema,
   getSchemaType,
@@ -13,7 +12,8 @@ import {
   isObjectSchema,
   isStringSchema,
   isUnionSchema,
-} from "./schema-converter.ts";
+  toGeminiMessages,
+} from "./utils.ts";
 import type {
   ArraySchema,
   BooleanSchema,
@@ -25,6 +25,7 @@ import type {
   StringSchema,
   UnionSchema,
 } from "../../../../domain/entities/extraction.entity.ts";
+import { SchemaType } from "@google/generative-ai";
 
 describe("Schema Type Guards", () => {
   describe("isStringSchema", () => {
@@ -343,6 +344,126 @@ describe("Schema Conversion", () => {
       expect(() => convertToGeminiSchema(badArraySchema)).toThrow(
         "Array schema must have items property",
       );
+    });
+  });
+});
+
+describe("toGeminiMessages", () => {
+  describe("Basic message types", () => {
+    it("should convert a system message to a Gemini message", () => {
+      expect(toGeminiMessages({ vision: false }, [
+        {
+          role: "system",
+          content: {
+            type: "text",
+            text: "Hello, world!",
+          },
+        },
+      ])).toEqual([
+        { role: "system", parts: [{ text: "Hello, world!" }] },
+      ]);
+    });
+
+    it("should convert a user message to a Gemini message", () => {
+      expect(toGeminiMessages({ vision: false }, [
+        {
+          role: "user",
+          content: {
+            type: "text",
+            text: "Hello, world!",
+          },
+        },
+      ])).toEqual([
+        { role: "user", parts: [{ text: "Hello, world!" }] },
+      ]);
+    });
+
+    it("should convert an assistant message to a Gemini message", () => {
+      expect(toGeminiMessages({ vision: false }, [
+        {
+          role: "assistant",
+          content: {
+            type: "text",
+            text: "Hello, world!",
+          },
+        },
+      ])).toEqual([
+        { role: "assistant", parts: [{ text: "Hello, world!" }] },
+      ]);
+    });
+
+    it("should convert multiple messages to Gemini messages", () => {
+      expect(toGeminiMessages({ vision: false }, [
+        {
+          role: "system",
+          content: {
+            type: "text",
+            text: "System prompt",
+          },
+        },
+        {
+          role: "user",
+          content: {
+            type: "text",
+            text: "User question",
+          },
+        },
+        {
+          role: "assistant",
+          content: {
+            type: "text",
+            text: "Assistant response",
+          },
+        },
+      ])).toEqual([
+        { role: "system", parts: [{ text: "System prompt" }] },
+        { role: "user", parts: [{ text: "User question" }] },
+        { role: "assistant", parts: [{ text: "Assistant response" }] },
+      ]);
+    });
+  });
+
+  describe("Error cases", () => {
+    it("should throw an error for vision content when vision is supported", () => {
+      expect(() =>
+        toGeminiMessages({ vision: true }, [
+          {
+            role: "user",
+            content: {
+              type: "vision",
+              image: "https://example.com/image.png",
+            },
+          },
+        ])
+      ).toThrow("Vision is not supported");
+    });
+
+    it("should throw an error for unsupported content types", () => {
+      expect(() =>
+        toGeminiMessages({ vision: false }, [
+          {
+            role: "user",
+            content: {
+              type: "unsupported",
+              text: "Hello, world!",
+            } as any,
+          },
+        ])
+      ).toThrow("Unsupported message");
+    });
+
+    it("should throw an error for unsupported roles", () => {
+      expect(() =>
+        toGeminiMessages({ vision: false }, [
+          {
+            role: "unsupported" as any,
+            content: {
+              type: "text",
+              text: "Hello, world!",
+            },
+          },
+        ])
+      ).toThrow("Unsupported role");
     });
   });
 });

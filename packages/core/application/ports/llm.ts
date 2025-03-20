@@ -13,7 +13,7 @@ type TextContent = {
 
 export type VisionContent = {
   type: "vision";
-  text: string;
+  text?: string;
   image: string;
 };
 

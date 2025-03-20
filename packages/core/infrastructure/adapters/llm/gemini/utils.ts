@@ -1,10 +1,9 @@
-/**
- * Schema Converter for Gemini LLM
- *
- * This module provides utilities for converting our internal schema format
- * to Gemini's ResponseSchema format used for structured output generation.
- */
-
+import type { Content } from "@google/generative-ai";
+import {
+  type Features,
+  isVisionContent,
+  type Message,
+} from "../../../../application/ports/llm.ts";
 import { type ResponseSchema, SchemaType } from "@google/generative-ai";
 import type {
   ArraySchema,
@@ -17,6 +16,44 @@ import type {
   StringSchema,
   UnionSchema,
 } from "../../../../domain/entities/extraction.entity.ts";
+
+export const toGeminiMessages = (
+  features: Features,
+  messages: Message[],
+): Content[] => {
+  return messages.map((message) => {
+    if (message.role === "system") {
+      return {
+        role: message.role,
+        parts: [{ text: message.content.text }],
+      };
+    }
+
+    if (message.role === "assistant") {
+      return {
+        role: message.role,
+        parts: [{ text: message.content.text }],
+      };
+    }
+
+    if (message.role === "user") {
+      if (message.content.type === "text") {
+        return {
+          role: message.role,
+          parts: [{ text: message.content.text }],
+        };
+      }
+
+      if (features.vision && isVisionContent(message.content)) {
+        throw new Error("Vision is not supported");
+      }
+
+      throw new Error(`Unsupported message: ${JSON.stringify(message)}`);
+    }
+
+    throw new Error(`Unsupported role: ${message}`);
+  });
+};
 
 /**
  * Type guard for union schemas (oneOf, anyOf, allOf)

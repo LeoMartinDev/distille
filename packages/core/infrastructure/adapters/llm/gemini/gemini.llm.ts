@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { Features, Llm } from "../../../../application/ports/llm.ts";
 import { safeJsonParse } from "../../utils/safe-json-parse.ts";
-import { convertToGeminiSchema } from "./schema-converter.ts";
+import { convertToGeminiSchema, toGeminiMessages } from "./utils.ts";
 
 /**
  * Factory type for creating Gemini LLM instances
@@ -42,12 +42,7 @@ export const makeGeminiLlmFactory = <Model extends string>(args: {
         });
 
         const result = await model.generateContent({
-          contents: messages.map((message) => ({
-            role: message.role === "system" ? "user" : message.role,
-            parts: [{
-              text: message.content.text,
-            }],
-          })),
+          contents: toGeminiMessages(args.features, messages),
         });
 
         return {

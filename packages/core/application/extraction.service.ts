@@ -15,7 +15,7 @@ export type ExtractionService<L extends Llm> = {
     args: {
       loader: Loader;
       schema: Schema;
-      messages?: Message<L["features"]>[];
+      messages?: Message[];
       model: L["model"];
     },
   ) => Promise<Extraction>;
@@ -30,7 +30,7 @@ export const extractionServiceFactory = <L extends Llm>({
       args: {
         loader: Loader;
         schema: Schema;
-        messages?: Message<L["features"]>[];
+        messages?: Message[];
         model: L["model"];
       },
     ): Promise<Extraction> => {
@@ -44,7 +44,7 @@ export const extractionServiceFactory = <L extends Llm>({
         throw new Error("Failed to load content");
       }
 
-      const messages: Message<L["features"]>[] = [
+      const messages: Message[] = [
         {
           role: "system",
           content: {

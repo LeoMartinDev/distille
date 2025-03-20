@@ -111,20 +111,36 @@ describe("toMistralAiMessages", () => {
 
   describe("When the model supports vision", () => {
     it("converts user text and vision messages", () => {
-      const result = toMistralAiMessages({ vision: true }, [{
+      expect(toMistralAiMessages({ vision: true }, [{
         role: "user",
         content: {
           type: "vision",
           text: "Hello, world!",
           image: "https://example.com/image.png",
         },
-      }]);
-
-      expect(result).toEqual([
+      }])).toEqual([
         {
           role: "user",
           content: [
             { type: "text", text: "Hello, world!" },
+            {
+              type: "image_url",
+              imageUrl: { url: "https://example.com/image.png" },
+            },
+          ],
+        },
+      ]);
+
+      expect(toMistralAiMessages({ vision: true }, [{
+        role: "user",
+        content: {
+          type: "vision",
+          image: "https://example.com/image.png",
+        },
+      }])).toEqual([
+        {
+          role: "user",
+          content: [
             {
               type: "image_url",
               imageUrl: { url: "https://example.com/image.png" },
