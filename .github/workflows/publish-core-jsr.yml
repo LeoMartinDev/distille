@@ -34,7 +34,7 @@ jobs:
                 "prepareCmd": "jq '.version = \"\${nextRelease.version}\"' jsr.json > jsr.json.tmp && mv jsr.json.tmp jsr.json"
               }],
               ["@semantic-release/github", {
-                "successComment": false,
+                "successComment": true,
                 "failTitle": false
               }]
             ]
@@ -47,7 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           deno run -A --allow-scripts=npm:canvas@2.11.2 npm:semantic-release \
-            -p npm:@semantic-release/github \
             -p npm:@semantic-release/changelog \
             -p npm:@semantic-release/exec
 
