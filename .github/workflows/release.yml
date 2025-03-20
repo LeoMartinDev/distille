@@ -4,10 +4,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "packages/core/**"
+      - ".github/workflows/release.yml"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: Release
     permissions:
       contents: write # to be able to publish a GitHub release
       issues: write # to be able to comment on released issues
@@ -17,6 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT_WITH_ADMIN_ACCESS }}
           persist-credentials: true
 
       - name: Setup Deno
