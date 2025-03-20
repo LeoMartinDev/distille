@@ -1,5 +1,5 @@
 {
-  "name": "distille",
+  "name": "@leomartin/distille",
   "description": "Distille is a tool for extracting structured data from unstructured text.",
   "exports": "./mod.ts"
 }
