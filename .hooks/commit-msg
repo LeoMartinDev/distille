@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Get the commit message file path
+commit_msg_file=$1
+
+# Path to the commitlint JSON config file
+config_file=$(git rev-parse --show-toplevel)/.commitlintrc.json
+
+# Run commitlint via Deno's npm compatibility
+deno run -A npm:@commitlint/cli --config "$config_file" --edit "$commit_msg_file"
+
+# Exit with the status of the commitlint command
+exit $? 

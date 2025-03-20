@@ -1,0 +1,56 @@
+name: Publish Core JSR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write # The OIDC ID token is used for authentication with JSR.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+
+      - name: Create semantic-release config
+        working-directory: ./packages/core
+        run: |
+          cat > .releaserc.json << EOF
+          {
+            "branches": ["main"],
+            "plugins": [
+              "@semantic-release/commit-analyzer",
+              "@semantic-release/release-notes-generator",
+              "@semantic-release/changelog",
+              ["@semantic-release/exec", {
+                "prepareCmd": "jq '.version = \"${nextRelease.version}\"' jsr.json > jsr.json.tmp && mv jsr.json.tmp jsr.json"
+              }],
+              ["@semantic-release/git", {
+                "assets": ["jsr.json", "CHANGELOG.md"],
+                "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+              }]
+            ]
+          }
+          EOF
+
+      - name: Run semantic-release with Deno
+        working-directory: ./packages/core
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          deno run --allow-read --allow-write --allow-run --allow-env --allow-net npm:semantic-release \
+            -p npm:@semantic-release/git \
+            -p npm:@semantic-release/changelog \
+            -p npm:@semantic-release/exec
+
+      - name: Publish core package
+        working-directory: ./packages/core
+        run: deno publish

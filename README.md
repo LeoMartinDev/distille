@@ -9,6 +9,8 @@
 - [Features](#features)
 - [Configuration](#configuration)
 - [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
   - [API](#api)
     - [Docker Deployment](#with-docker)
     - [Local Development](#locally)
@@ -69,6 +71,51 @@ You can obtain these API keys from their respective platforms:
 - Google Gemini: https://ai.google.dev/
 
 ## Getting Started
+
+### Prerequisites
+
+- [Deno](https://deno.land/) (version 2 or higher)
+
+### Installation
+
+1. Clone the repository
+   ```
+   git clone https://github.com/yourusername/distille.git
+   cd distille
+   ```
+
+2. Install git hooks
+   ```
+   chmod +x .hooks/setup-hooks.sh
+   ./.hooks/setup-hooks.sh
+   ```
+
+## Development
+
+### Commit Message Convention
+
+This project follows
+[Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+We use the standard `@commitlint/config-conventional` rules via a JSON
+configuration file (`.commitlintrc.json`). These rules are enforced
+automatically through git hooks.
+
+Examples:
+
+- `feat(core): add new extraction API`
+- `fix: correct parsing error in JSON output`
+- `docs: update installation instructions`
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ### API
 

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Run tests using Deno
+echo "Running tests..."
+deno test
+
+# Exit with the status of the test command
+test_result=$?
+if [ $test_result -ne 0 ]; then
+  echo "Tests failed. Fix the failing tests before committing."
+  exit $test_result
+fi
+
+# Run Deno lint
+echo "Running linter..."
+deno lint
+
+# Exit with the status of the lint command
+lint_result=$?
+if [ $lint_result -ne 0 ]; then
+  echo "Linting failed. Fix the linting issues before committing."
+  exit $lint_result
+fi
+
+exit 0 
