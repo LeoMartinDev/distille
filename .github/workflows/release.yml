@@ -17,10 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
+          persist-credentials: true
 
       - name: Setup Node JS
         uses: actions/setup-node@v4
@@ -44,7 +41,7 @@ jobs:
                 "prepareCmd": "jq '.version = \"\${nextRelease.version}\"' jsr.json > jsr.json.tmp && mv jsr.json.tmp jsr.json"
               }],
               ["@semantic-release/github", {
-                "successComment": true,
+                "successComment": false,
                 "failTitle": false
               }]
             ]
