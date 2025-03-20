@@ -20,6 +20,9 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
 
+      - name: Install semantic-release
+        run: deno install -A npm:semantic-release npm:@semantic-release/changelog npm:@semantic-release/exec npm:@semantic-release/commit-analyzer npm:@semantic-release/release-notes-generator npm:@semantic-release/github --allow-scripts=npm:canvas@2.11.2
+
       - name: Create semantic-release config
         working-directory: ./packages/core
         run: |
