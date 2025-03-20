@@ -66,6 +66,29 @@ jobs:
             jq --arg version "$VERSION" '. + {version: $version}' deno.json > deno.json.tmp && mv deno.json.tmp deno.json
           fi
 
+          # Get workspace packages from deno.json
+          PACKAGES=$(jq -r '.workspace[]' deno.json)
+
+          # Update version in all workspace packages
+          for PACKAGE in $PACKAGES; do
+            # Skip packages/api as it's excluded from publishing
+            if [ "$PACKAGE" = "packages/api" ]; then
+              continue
+            fi
+
+            # Update package deno.json
+            if [ -f "$PACKAGE/deno.json" ]; then
+              echo "Updating version in $PACKAGE/deno.json"
+              jq --arg version "$VERSION" '. + {version: $version}' $PACKAGE/deno.json > $PACKAGE/deno.json.tmp && mv $PACKAGE/deno.json.tmp $PACKAGE/deno.json
+            fi
+
+            # Update package jsr.json if it exists
+            if [ -f "$PACKAGE/jsr.json" ]; then
+              echo "Updating version in $PACKAGE/jsr.json"
+              jq --arg version "$VERSION" '. + {version: $version}' $PACKAGE/jsr.json > $PACKAGE/jsr.json.tmp && mv $PACKAGE/jsr.json.tmp $PACKAGE/jsr.json
+            fi
+          done
+
           echo "Using version: $VERSION"
 
       - name: Publish workspace
