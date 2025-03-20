@@ -1,4 +1,4 @@
-name: Release @distille/core
+name: Release @leomartin/distille
 
 on:
   push:
@@ -31,7 +31,6 @@ jobs:
         run: npm install -g semantic-release @semantic-release/changelog @semantic-release/exec @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/github
 
       - name: Create semantic-release config
-        working-directory: ./packages/core
         run: |
           cat > .releaserc.json << EOF
           {
@@ -41,7 +40,7 @@ jobs:
               "@semantic-release/release-notes-generator",
               "@semantic-release/changelog",
               ["@semantic-release/exec", {
-                "prepareCmd": "jq '.version = \"\${nextRelease.version}\"' jsr.json > jsr.json.tmp && mv jsr.json.tmp jsr.json"
+                "prepareCmd": "jq '.version = \"\${nextRelease.version}\"' deno.json > deno.json.tmp && mv deno.json.tmp deno.json"
               }],
               ["@semantic-release/github", {
                 "successComment": false,
@@ -51,31 +50,25 @@ jobs:
           }
           EOF
 
-      - name: Run semantic-release with Deno
-        working-directory: ./packages/core
+      - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx semantic-release
 
       - name: Check and set version
-        working-directory: ./packages/core
         run: |
-          # Check if version exists in jsr.json
-          VERSION=$(jq -r '.version // "1.0.0"' jsr.json)
+          # Check if version exists in root deno.json
+          VERSION=$(jq -r '.version // "1.0.0"' deno.json)
           if [ "$VERSION" = "null" ] || [ -z "$VERSION" ]; then
             # If version is null or empty, set initial version
             VERSION="1.0.0"
-            jq --arg version "$VERSION" '. + {version: $version}' jsr.json > jsr.json.tmp && mv jsr.json.tmp jsr.json
+            jq --arg version "$VERSION" '. + {version: $version}' deno.json > deno.json.tmp && mv deno.json.tmp deno.json
           fi
-
-          # Update deno.json with the version
-          jq --arg version "$VERSION" '. + {version: $version}' deno.json > deno.json.tmp && mv deno.json.tmp deno.json
 
           echo "Using version: $VERSION"
 
-      - name: Publish core package
-        working-directory: ./packages/core
+      - name: Publish workspace
         run: |
           deno install --allow-scripts=npm:canvas@2.11.2
           deno publish --allow-dirty
@@ -84,6 +77,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add packages/core/deno.json packages/core/jsr.json
+          git add deno.json packages/core/deno.json packages/core/jsr.json
           git commit -m "chore: sync version in config files [skip ci]" || echo "No changes to commit"
           git push

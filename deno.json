@@ -1,10 +1,15 @@
 {
+  "name": "@leomartin/distille",
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "workspace": ["packages/core", "packages/api"],
   "nodeModulesDir": "auto",
   "unstable": ["temporal"],
+  "license": "MIT",
   "imports": {
     "@std/expect": "jsr:@std/expect@^1.0.13",
     "@std/testing": "jsr:@std/testing@^1.0.9"
+  },
+  "publish": {
+    "exclude": ["packages/api"]
   }
 }
