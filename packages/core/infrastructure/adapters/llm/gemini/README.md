@@ -7,8 +7,8 @@ application's LLM interface.
 
 - `gemini.llm.ts` - Main adapter that implements the `Llm` interface for
   Google's Gemini models
-- `schema-converter.ts` - Utilities for converting our JSON schema format to
-  Gemini's ResponseSchema format
+- `utils.ts` - Utilities for converting our JSON schema format to Gemini's
+  ResponseSchema format
 - `gemini-2.0-flash.llm.ts` - Specific implementation for the Gemini 2.0 Flash
   model
 - `gemini-2.0-flash-lite.llm.ts` - Specific implementation for the Gemini 2.0
@@ -46,8 +46,8 @@ Gemini's models structured output schemas have some limitations. Google did not
 choose to support a subset of JSON Schemas but opted for a select subset of the
 OpenAPI 3.0 Schema object.
 
-The `schema-converter.ts` module handles the translation between our schema
-format and Gemini's required format, with support for:
+The `utils.ts` module handles the translation between our schema format and
+Gemini's required format, with support for:
 
 - **Basic types**: Converts primitive types (string, number, boolean, integer)
   to Gemini's SchemaType equivalents
