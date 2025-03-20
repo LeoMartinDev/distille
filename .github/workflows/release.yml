@@ -58,6 +58,14 @@ jobs:
         run: |
           npx semantic-release
 
+      - name: Copy version from jsr.json to deno.json
+        working-directory: ./packages/core
+        run: |
+          VERSION=$(jq -r '.version' jsr.json)
+          jq --arg version "$VERSION" '. + {version: $version}' deno.json > deno.json.tmp && mv deno.json.tmp deno.json
+
       - name: Publish core package
         working-directory: ./packages/core
-        run: deno publish
+        run: |
+          deno install --allow-scripts=npm:canvas@2.11.2
+          deno publish
