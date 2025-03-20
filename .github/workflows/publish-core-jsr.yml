@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          deno run --allow-read --allow-write --allow-run --allow-env --allow-net npm:semantic-release \
+          deno run -A --allow-scripts=npm:canvas@2.11.2 npm:semantic-release \
             -p npm:@semantic-release/git \
             -p npm:@semantic-release/changelog \
             -p npm:@semantic-release/exec
