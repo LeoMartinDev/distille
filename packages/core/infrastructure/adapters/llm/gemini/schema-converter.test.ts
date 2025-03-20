@@ -218,7 +218,10 @@ describe("Schema Conversion", () => {
         description?: string;
         minItems?: number;
         maxItems?: number;
-        items?: any;
+        items?: {
+          type: string;
+          description?: string;
+        };
       };
 
       expect(typedResult.type).toBe(SchemaType.ARRAY);
@@ -246,7 +249,12 @@ describe("Schema Conversion", () => {
         type: string;
         description?: string;
         required?: string[];
-        properties?: Record<string, any>;
+        properties?: Record<string, {
+          type: string;
+          description?: string;
+          format?: string;
+          nullable?: boolean;
+        }>;
       };
 
       expect(typedResult.type).toBe(SchemaType.OBJECT);
