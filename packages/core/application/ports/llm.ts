@@ -27,10 +27,9 @@ type AssistantMessage = {
   content: TextContent;
 };
 
-type UserMessage<F extends Features> = {
+type UserMessage = {
   role: "user";
-  content: F extends { vision: true } ? (VisionContent | TextContent)
-    : TextContent;
+  content: VisionContent | TextContent;
 };
 
 export function isVisionContent(
@@ -39,10 +38,10 @@ export function isVisionContent(
   return content?.type === "vision" && typeof content.image === "string";
 }
 
-export type Message<F extends Features = Features> =
+export type Message =
   | SystemMessage
   | AssistantMessage
-  | UserMessage<F>;
+  | UserMessage;
 
 export type Llm = {
   parse({

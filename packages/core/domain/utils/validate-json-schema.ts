@@ -8,10 +8,6 @@ export const validateJsonSchema = (
   data: unknown,
 ): boolean => {
   const validate = ajv.compile(schema);
-  try {
-    validate(data);
-    return true;
-  } catch (_err) {
-    return false;
-  }
+
+  return validate(data);
 };

@@ -1,7 +1,7 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@openai/openai@^4.86.2": "4.86.2",
+    "jsr:@openai/openai@^4.88.0": "4.88.0",
     "jsr:@std/assert@^1.0.10": "1.0.11",
     "jsr:@std/assert@^1.0.11": "1.0.11",
     "jsr:@std/data-structures@^1.0.6": "1.0.6",
@@ -16,20 +16,19 @@
     "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/testing@^1.0.9": "1.0.9",
     "npm:@google/generative-ai@0.24": "0.24.0",
-    "npm:@mistralai/mistralai@^1.5.1": "1.5.1_zod@3.24.2",
+    "npm:@mistralai/mistralai@^1.5.2": "1.5.2_zod@3.24.2",
     "npm:@types/node@*": "22.12.0",
     "npm:ajv@^8.17.1": "8.17.1",
     "npm:json-schema-to-ts@^3.1.1": "3.1.1",
     "npm:unpdf@*": "0.12.1",
     "npm:unpdf@~0.12.1": "0.12.1",
-    "npm:zod@3": "3.24.2",
-    "npm:zod@^3.24.2": "3.24.2"
+    "npm:zod@3": "3.24.2"
   },
   "jsr": {
-    "@openai/openai@4.86.2": {
-      "integrity": "411b9a7b9ae259062154dd7d3f52bdda4a4932fad02e30248aac909587c72a8f",
+    "@openai/openai@4.88.0": {
+      "integrity": "e7bf8069b6b0d98122b2ee8b6748aff3d7090e8baf5e837fe2e5ce86d92c3d1e",
       "dependencies": [
-        "npm:zod@3"
+        "npm:zod"
       ]
     },
     "@std/assert@1.0.11": {
@@ -112,8 +111,8 @@
         "tar"
       ]
     },
-    "@mistralai/mistralai@1.5.1_zod@3.24.2": {
-      "integrity": "sha512-Ie0EH4dAO11MEXR5N2kS2cgr+ycTWvqN/yP9bKrtmUEqjdcF4i7DLxtrFMUw5l2dOPhrkX93G4SziFiATPWu2w==",
+    "@mistralai/mistralai@1.5.2_zod@3.24.2": {
+      "integrity": "sha512-mBTIDQmuAX9RowMYteZFHJIYlEwDcHzzaxgXzrFtlvH9CkKXK7R1VnZ1sZSe+uLMg0dIXUVdPRUh1SwyFeSqXw==",
       "dependencies": [
         "zod",
         "zod-to-json-schema"
@@ -536,12 +535,12 @@
       },
       "packages/core": {
         "dependencies": [
-          "jsr:@openai/openai@^4.86.2",
+          "jsr:@openai/openai@^4.88.0",
           "jsr:@std/assert@^1.0.11",
           "jsr:@std/log@~0.224.14",
           "jsr:@std/path@^1.0.8",
           "npm:@google/generative-ai@0.24",
-          "npm:@mistralai/mistralai@^1.5.1",
+          "npm:@mistralai/mistralai@^1.5.2",
           "npm:ajv@^8.17.1",
           "npm:json-schema-to-ts@^3.1.1",
           "npm:unpdf@~0.12.1"

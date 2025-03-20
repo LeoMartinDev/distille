@@ -1,92 +1,6 @@
 import { Mistral } from "@mistralai/mistralai";
-import type { JSONSchema } from "json-schema-to-ts";
-import {
-  type Features,
-  isVisionContent,
-  type Llm,
-  type Message,
-  type VisionContent,
-} from "../../../../application/ports/llm.ts";
-import { validateJsonSchema } from "../../../../domain/utils/validate-json-schema.ts";
-import { safeJsonParse } from "../../utils/safe-json-parse.ts";
-
-const getData = (
-  schema: JSONSchema,
-  data: Awaited<ReturnType<Mistral["chat"]["complete"]>>,
-) => {
-  const content = data.choices?.[0]?.message?.content;
-
-  if (!content) {
-    return null;
-  }
-
-  if (Array.isArray(content)) {
-    return null;
-  }
-
-  const parsed = safeJsonParse(content);
-
-  if (!parsed) {
-    return null;
-  }
-
-  const isValid = validateJsonSchema(schema, parsed);
-
-  if (!isValid) {
-    return null;
-  }
-
-  return parsed;
-};
-
-const toMistralAiMessages = (
-  features: Features,
-  messages: Message<typeof features>[],
-) =>
-  messages.map(({ role, content }) => {
-    if (role === "system") {
-      return {
-        role: "system" as const,
-        content: content.text,
-      };
-    }
-
-    if (role === "assistant") {
-      return {
-        role: "assistant" as const,
-        content: content.text,
-      };
-    }
-
-    if (role === "user") {
-      if (content.type === "text") {
-        return {
-          role: "user" as const,
-          content: content.text,
-        };
-      }
-
-      if (features.vision && isVisionContent(content)) {
-        return {
-          role: "user" as const,
-          content: [
-            {
-              type: "text" as const,
-              text: (content as VisionContent).text,
-            },
-            {
-              type: "image_url" as const,
-              imageUrl: { url: (content as VisionContent).image },
-            },
-          ],
-        };
-      }
-
-      throw new Error(`Unsupported message`);
-    }
-
-    throw new Error(`Unsupported role: ${role}`);
-  });
+import type { Features, Llm } from "../../../../application/ports/llm.ts";
+import { getDataFromResponse, toMistralAiMessages } from "./utils.ts";
 
 export type MistralLlmFactory = (args: {
   apiKey: string;
@@ -120,7 +34,7 @@ export const makeMistralLlmFactory = <Model extends string>(args: {
         });
 
         return {
-          data: getData(schema, response),
+          data: getDataFromResponse({ schema, response }),
           usage: {
             promptTokens: response.usage.promptTokens,
             completionTokens: response.usage.completionTokens,

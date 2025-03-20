@@ -6,8 +6,8 @@
   },
   "imports": {
     "@google/generative-ai": "npm:@google/generative-ai@^0.24.0",
-    "@mistralai/mistralai": "npm:@mistralai/mistralai@^1.5.1",
-    "@openai/openai": "jsr:@openai/openai@^4.86.2",
+    "@mistralai/mistralai": "npm:@mistralai/mistralai@^1.5.2",
+    "@openai/openai": "jsr:@openai/openai@^4.88.0",
     "@std/assert": "jsr:@std/assert@^1.0.11",
     "@std/log": "jsr:@std/log@^0.224.14",
     "@std/path": "jsr:@std/path@^1.0.8",
