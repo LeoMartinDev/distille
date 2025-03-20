@@ -27,7 +27,7 @@ type AssistantMessage = {
   content: TextContent;
 };
 
-type UserMessage = {
+export type UserMessage = {
   role: "user";
   content: VisionContent | TextContent;
 };

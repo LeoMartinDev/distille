@@ -26,6 +26,7 @@ import type {
   UnionSchema,
 } from "../../../../domain/entities/extraction.entity.ts";
 import { SchemaType } from "@google/generative-ai";
+import type { Message } from "../../../../application/ports/llm.ts";
 
 describe("Schema Type Guards", () => {
   describe("isStringSchema", () => {
@@ -446,8 +447,8 @@ describe("toGeminiMessages", () => {
             content: {
               type: "unsupported",
               text: "Hello, world!",
-            } as any,
-          },
+            },
+          } as unknown as Message,
         ])
       ).toThrow("Unsupported message");
     });
@@ -456,12 +457,12 @@ describe("toGeminiMessages", () => {
       expect(() =>
         toGeminiMessages({ vision: false }, [
           {
-            role: "unsupported" as any,
+            role: "unsupported",
             content: {
               type: "text",
               text: "Hello, world!",
             },
-          },
+          } as unknown as Message,
         ])
       ).toThrow("Unsupported role");
     });
