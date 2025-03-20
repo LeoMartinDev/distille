@@ -1,4 +1,4 @@
-import { extractText, getResolvedPDFJS } from "npm:unpdf";
+import { extractText, getResolvedPDFJS } from "unpdf";
 import { readFile } from "node:fs/promises";
 
 import { type Loader, makeLoader } from "../../../application/ports/loader.ts";
