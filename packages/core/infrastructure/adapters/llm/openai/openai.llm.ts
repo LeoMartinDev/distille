@@ -6,6 +6,38 @@ import {
   type Message,
   type VisionContent,
 } from "../../../../application/ports/llm.ts";
+import type { Schema } from "../../../../domain/entities/extraction.entity.ts";
+
+export const prepareSchemaForOpenAI = (
+  schema: Schema,
+): Record<string, unknown> => {
+  // Simple validation to ensure it's a proper schema
+  if (!schema || typeof schema !== "object") {
+    throw new Error("Invalid schema: Schema must be an object");
+  }
+
+  // If it's a union schema (oneOf/anyOf/allOf), validate it has the right property
+  if (
+    "oneOf" in schema &&
+    (!Array.isArray(schema.oneOf) || schema.oneOf.length === 0)
+  ) {
+    throw new Error("Invalid schema: oneOf must be a non-empty array");
+  }
+  if (
+    "anyOf" in schema &&
+    (!Array.isArray(schema.anyOf) || schema.anyOf.length === 0)
+  ) {
+    throw new Error("Invalid schema: anyOf must be a non-empty array");
+  }
+  if (
+    "allOf" in schema &&
+    (!Array.isArray(schema.allOf) || schema.allOf.length === 0)
+  ) {
+    throw new Error("Invalid schema: allOf must be a non-empty array");
+  }
+
+  return structuredClone(schema) as Record<string, unknown>;
+};
 
 const toOpenAiMessages = (
   features: Features,
@@ -71,6 +103,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
 
     return {
       parse: async ({ schema, messages }) => {
+        const responseSchema = prepareSchemaForOpenAI(schema);
         const response = await client.beta.chat.completions.parse({
           model: args.model,
           messages: toOpenAiMessages(args.features, messages),
@@ -78,7 +111,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
             type: "json_schema",
             json_schema: {
               name: "response",
-              schema: schema as unknown as Record<string, unknown>,
+              schema: responseSchema,
               strict: true,
             },
           },
@@ -93,6 +126,7 @@ export const makeOpenaiLlmFactory = <Model extends string>(args: {
             completionTokens: response.usage?.completion_tokens ?? -1,
             totalTokens: response.usage?.total_tokens ?? -1,
           },
+          schema: responseSchema,
         };
       },
       model: args.model,

@@ -8,14 +8,7 @@ import {
   type VisionContent,
 } from "../../../../application/ports/llm.ts";
 import { validateJsonSchema } from "../../../../domain/utils/validate-json-schema.ts";
-
-const safeJsonParse = (data: string) => {
-  try {
-    return JSON.parse(data);
-  } catch (_error) {
-    return null;
-  }
-};
+import { safeJsonParse } from "../../utils/safe-json-parse.ts";
 
 const getData = (
   schema: JSONSchema,
@@ -133,6 +126,7 @@ export const makeMistralLlmFactory = <Model extends string>(args: {
             completionTokens: response.usage.completionTokens,
             totalTokens: response.usage.totalTokens,
           },
+          schema,
         };
       },
       model: args.model,

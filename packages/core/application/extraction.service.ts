@@ -1,8 +1,7 @@
-import type { JSONSchema } from "json-schema-to-ts";
-
 import {
   createExtraction,
   type Extraction,
+  type Schema,
 } from "../domain/entities/extraction.entity.ts";
 import type { Llm, Message } from "./ports/llm.ts";
 import type { Loader } from "./ports/loader.ts";
@@ -15,7 +14,7 @@ export type ExtractionService<L extends Llm> = {
   extract: (
     args: {
       loader: Loader;
-      schema: JSONSchema;
+      schema: Schema;
       messages?: Message<L["features"]>[];
       model: L["model"];
     },
@@ -30,7 +29,7 @@ export const extractionServiceFactory = <L extends Llm>({
     extract: async (
       args: {
         loader: Loader;
-        schema: JSONSchema;
+        schema: Schema;
         messages?: Message<L["features"]>[];
         model: L["model"];
       },
@@ -72,7 +71,10 @@ export const extractionServiceFactory = <L extends Llm>({
 
       return createExtraction({
         id: crypto.randomUUID(),
-        schema: args.schema,
+        schemas: {
+          original: args.schema,
+          transformed: llmResult.schema,
+        },
         model: args.model,
         data: llmResult.data,
         createdAt: Temporal.Now.instant(),
