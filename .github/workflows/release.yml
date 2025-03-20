@@ -78,7 +78,7 @@ jobs:
         working-directory: ./packages/core
         run: |
           deno install --allow-scripts=npm:canvas@2.11.2
-          deno publish
+          deno publish --allow-dirty
 
       - name: Commit and push updated files
         run: |
