@@ -1,6 +1,8 @@
 {
-  "name": "@distille/core",
   "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "name": "@distille/core",
+  "license": "MIT",
+  "description": "Distille is a tool for extracting structured data from unstructured text.",
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
@@ -19,6 +21,5 @@
     ".": "./mod.ts",
     "./infrastructure/adapters/llm": "./infrastructure/adapters/llm/index.ts",
     "./infrastructure/adapters/loader": "./infrastructure/adapters/loader/index.ts"
-  },
-  "license": "MIT"
+  }
 }
