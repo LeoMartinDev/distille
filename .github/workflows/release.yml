@@ -19,6 +19,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+
       - name: Setup Node JS
         uses: actions/setup-node@v4
         with:
