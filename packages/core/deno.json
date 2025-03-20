@@ -21,5 +21,6 @@
     ".": "./mod.ts",
     "./infrastructure/adapters/llm": "./infrastructure/adapters/llm/index.ts",
     "./infrastructure/adapters/loader": "./infrastructure/adapters/loader/index.ts"
-  }
+  },
+  "version": "1.0.0"
 }
